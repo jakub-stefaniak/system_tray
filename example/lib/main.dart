@@ -48,7 +48,9 @@ class _MyAppState extends State<MyApp> {
         'app_icon.ico'
       ]);
     } else if (Platform.isMacOS) {
-      path = p.joinAll(['AppIcon']);
+      // '/Users/jackstefansky/Downloads/test.png';
+      path =
+          '/Users/jackstefansky/Library/Containers/com.example.timecampPoc/Data/Library/Caches/test.png'; //p.joinAll(['AppIcon']);
     } else {
       path = p.joinAll([
         p.dirname(Platform.resolvedExecutable),
@@ -56,32 +58,31 @@ class _MyAppState extends State<MyApp> {
         'app_icon.png'
       ]);
     }
+    print(p.current);
 
     // We first init the systray menu and then add the menu entries
-    await _systemTray.initSystemTray("system tray",
-        iconPath: path, toolTip: "How to use system tray with Flutter");
+    await _systemTray.initSystemTray(
+      title: "system tray",
+      iconPath: path,
+      toolTip: "How to use system tray with Flutter",
+    );
+
     await _systemTray.setContextMenu(
       [
         MenuItem(
-          label: 'Show',
+          label: 'Change menu',
           onClicked: () {
-            appWindow.show();
+            _systemTray.setContextMenu(
+              [
+                MenuItem(
+                  label: 'WORKS',
+                  onClicked: () {
+                    appWindow.close();
+                  },
+                ),
+              ],
+            );
           },
-        ),
-        MenuSeparator(),
-        SubMenu(
-          label: "SubMenu",
-          children: [
-            MenuItem(
-              label: 'SubItem1',
-              enabled: false,
-              onClicked: () {
-                print("click SubItem1");
-              },
-            ),
-            MenuItem(label: 'SubItem2'),
-            MenuItem(label: 'SubItem3'),
-          ],
         ),
         MenuSeparator(),
         MenuItem(
