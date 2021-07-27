@@ -48,9 +48,7 @@ class _MyAppState extends State<MyApp> {
         'app_icon.ico'
       ]);
     } else if (Platform.isMacOS) {
-      // '/Users/jackstefansky/Downloads/test.png';
-      path =
-          '/Users/jackstefansky/Library/Containers/com.example.timecampPoc/Data/Library/Caches/test.png'; //p.joinAll(['AppIcon']);
+      path = p.joinAll(['AppIcon']);
     } else {
       path = p.joinAll([
         p.dirname(Platform.resolvedExecutable),

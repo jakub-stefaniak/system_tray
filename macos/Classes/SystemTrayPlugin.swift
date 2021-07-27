@@ -3,6 +3,7 @@ import FlutterMacOS
 
 let kChannelName = "flutter/system_tray"
 let kInitSystemTray = "InitSystemTray";
+let kSetIcon = "SetIcon";
 let kSetContextMenu = "SetContextMenu";
 let kMenuItemSelectedCallbackMethod = "MenuItemSelectedCallback";
 
@@ -15,6 +16,9 @@ let kLabelKey = "label";
 let kSeparatorKey = "separator";
 let kSubMenuKey = "submenu";
 let kEnabledKey = "enabled";
+
+let kIconBytes = "iconBytes";
+let kIconBytesLength = "iconBytesLength";
 
 public class SystemTrayPlugin: NSObject, FlutterPlugin {
   var system_tray: SystemTray?
@@ -37,6 +41,8 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
       init_system_tray(call, result)
     case kSetContextMenu:
       set_context_menu(call, result)
+    //case kSetIcon:
+      //set_icon(call, result)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -45,11 +51,26 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
   func init_system_tray(_ call: FlutterMethodCall, _ result: FlutterResult) {
       let arguments = call.arguments as! [String: Any]
       let title = arguments[kTitleKey] as! String
-      let iconPath = arguments[kIconPathKey] as! String
+      //let iconPath = arguments[kIconPathKey] as! String
       let toolTip = arguments[kToolTipKey] as! String
-      result(system_tray?.init_system_tray(title: title, iconPath: iconPath, toolTip: toolTip) ?? false)
+    
+      let iconFlutterBytes = arguments[kIconBytes] as! FlutterStandardTypedData
+      let iconFlutterBytesLength = arguments[kIconBytesLength] as! NSNumber
+
+      let iconBytes = [UInt8](iconFlutterBytes.data)
+      let iconBytesLength = iconFlutterBytesLength.intValue;
+    
+    
+      result(system_tray?.init_system_tray(title: title, iconBytes: iconBytes, iconBytesLength: iconBytesLength, toolTip: toolTip) ?? false)
   }
 
+/*   func set_icon(_ call: FlutterMethodCall, _ result: FlutterResult) {
+      let iconPath = arguments[kIconPathKey] as! String
+      result(system_tray?.set_icon(iconPath: iconPath) ?? false)
+  } */
+
+
+  
   func value_to_menu_item(menu: NSMenu, item: [String: Any]) -> Bool {
     let type = item[kTypeKey] as? String
     if type == nil {

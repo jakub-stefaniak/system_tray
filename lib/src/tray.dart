@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -18,6 +19,8 @@ const String _kTypeKey = 'type';
 const String _kLabelKey = 'label';
 const String _kSubMenuKey = 'submenu';
 const String _kEnabledKey = 'enabled';
+const String _kIconBytes = 'iconBytes';
+const String _kIconBytesLength = 'iconBytesLength';
 
 class SystemTray {
   SystemTray() {
@@ -41,17 +44,26 @@ class SystemTray {
   bool _updateInProgress = false;
 
   // Show a SystemTray icon
-  Future<bool> initSystemTray(
-    String title, {
-    String? iconPath,
+  Future<bool> initSystemTray({
+    required String title, 
+    required String iconPath,
     String? toolTip,
   }) async {
+
+
+    final trayIconFile = File(iconPath);
+    final trayIconBytes = trayIconFile.readAsBytesSync();
+
+
     bool value = await _platformChannel.invokeMethod(
       _kInitSystemTray,
       <String, dynamic>{
         _kTitleKey: title,
-        _kIconPathKey: iconPath ?? "",
+        _kIconBytes: trayIconBytes,
+        _kIconBytesLength: trayIconBytes.length,
+        _kIconPathKey: iconPath,
         _kToolTipKey: toolTip ?? "",
+        
       },
     );
     return value;
